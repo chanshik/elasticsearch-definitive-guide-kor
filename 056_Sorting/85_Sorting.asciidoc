@@ -1,21 +1,27 @@
 [[sorting]]
-== Sorting and Relevance
+== Sorting and Relevance - 정렬과 Relevance
 
 By default, results are returned sorted by _relevance_&#x2014;with the most
 relevant docs first.((("sorting", "by relevance")))((("relevance", "sorting results by"))) Later in this chapter, we explain what we mean by
 _relevance_ and how it is calculated, but let's start by looking at the `sort`
 parameter and how to use it.
 
-=== Sorting
+기본적으로, 결과는 가장 관련 있는 document가 가장 먼저 나오도록, relevance에 의해서 정렬되어 반환된다. 이 장의 후반부에서, relevance의 의미와 계산되는 방법에 대해 설명할 것이다. sort 매개변수를 살펴보고, 사용하는 방법을 알아보자.
+
+=== Sorting - 정렬
 
 In order to sort by relevance, we need to represent relevance as a value. In
 Elasticsearch,  the _relevance score_ is represented by the floating-point
 number returned in the search results as the `_score`, ((("relevance scores", "returned in search results score")))((("score", "relevance score of search results")))so the default sort
 order is `_score` descending.
 
+relevance로 정렬하기 위해, relevance를 값으로 표시해야 한다. Elasticsearch에서 relevance score는 검색 결과에 _score 로 반횐되는 부동 소수점 숫자로 표시된다. 기본 정렬 순서는 _score의 내림차순이다.
+
 Sometimes, though, you don't have a meaningful relevance score. For instance,
 the following query just returns all tweets whose `user_id` field has the
 value `1`:
+
+그러나, 가끔 의미 있는 relevance score를 가지지 않을 수도 있다. 예를 들면, 아래 query는 user_id field의 값이 1인 모든 tweet을 반환한다.
 
 [source,js]
 --------------------------------------------------
@@ -37,10 +43,14 @@ Filters have no bearing on `_score`, and the((("score", seealso="relevance; rele
 query just sets the `_score` to a neutral value of `1` for all documents. In
 other words, all documents are considered to be equally relevant.
 
-==== Sorting by Field Values
+filter는 _score와 아무 관련이 없으며, 묵시적 누락(missing-but-implied)인 match_all query는 모든 document의 _score에 기본값 1을 설정한다. 즉, 모든 document는 똑같이 관련 있다고 간주된다. 즉, 모든 document는 똑같이 관련 있다고 간주된다.
+
+==== Sorting by Field Values - Field 값에 의한 정렬
 
 In this case, it probably makes sense to sort tweets by recency, with the most
 recent tweets first.((("sorting", "by field values")))((("fields", "sorting search results by field values")))((("sort parameter")))  We can do this with the `sort` parameter:
+
+이 경우에는, 아마 가장 최근의 tweet이 우선하도록, 정렬하는 것이 의미가 있을 것이다. 이는 sort 매개변수로 가능하다.
 
 [source,js]
 --------------------------------------------------
@@ -57,6 +67,8 @@ GET /_search
 // SENSE: 056_Sorting/85_Sort_by_date.json
 
 You will notice two differences in the results:
+
+결과에서 두 가지 차이점을 발견할 수 있다.
 
 [source,js]
 --------------------------------------------------
@@ -81,11 +93,16 @@ You will notice two differences in the results:
 <2> The value of the `date` field, expressed as milliseconds since the epoch,
     is returned in the `sort` values.
 
+<1> 정렬에 사용되지 않았기 때문에 _score는 계산되지 않는다. 
+<2> date field의 값은 millisecond로 표시되어, sort 값으로 반환된다. 
+
 The first is that we have ((("date field, sorting search results by")))a new element in each result called `sort`, which
 contains the value(s) that was used for sorting.  In this case, we sorted on
 `date`, which internally is((("milliseconds-since-the-epoch (date)"))) indexed as _milliseconds since the epoch_. The long
 number `1411516800000` is equivalent to the date string `2014-09-24 00:00:00
 UTC`.
+
+각 결과에서 볼 수 있는 새로운 요소 중, 첫 번째는 정렬에 사용되는 값을 포함하고 있는 sort이다. 이 경우에, 내부적으로 millisecond로 색인된 date로 정렬하였다. long number 1411516800000는 date string 2014-09-24 00:00:00 UTC와 동일한 값이다.
 
 The second is that the `_score` and `max_score` are both `null`. ((("score", "not calculating"))) Calculating
 the `_score` can be quite expensive, and usually its only purpose is for
@@ -93,9 +110,13 @@ sorting; we're not sorting by relevance, so it doesn't make sense to keep
 track of the `_score`.  If you want the `_score` to be calculated regardless,
 you can set((("track_scores parameter"))) the `track_scores` parameter to `true`.
 
+두 번째는 _score와 max_score가 모두 null 이라는 점이다. _score를 계산한다는 것은 꽤 비용이 발생하는 작업이고, 그것의 목적은 정렬이다. 지금은 relevance로 정렬하지 않았고, 따라서 _score를 파악하는 것은 의미가 없다. 그럼에도 불구하고, _score가 계산되기를 원한다면, track_scores 매개변수를 true로 설정하면 된다.
+
 [TIP]
 ====
 As a shortcut, you can ((("sorting", "specifying just the field name to sort on")))specify just the name of the field to sort on:
+
+간략하게, 정렬할 field의 이름만 지정할 수 있다.
 
 [source,js]
 --------------------------------------------------
@@ -104,6 +125,8 @@ As a shortcut, you can ((("sorting", "specifying just the field name to sort on"
 
 Fields will be sorted in ((("sorting", "default ordering")))ascending order by default, and
 the `_score` value in descending order.
+
+field는 기본적으로 오름차순으로 정렬된다. 그리고 _score는 내림차순이다.
 ====
 
 ==== Multilevel Sorting
