@@ -15,7 +15,7 @@ Elasticsearch,  the _relevance score_ is represented by the floating-point
 number returned in the search results as the `_score`, ((("relevance scores", "returned in search results score")))((("score", "relevance score of search results")))so the default sort
 order is `_score` descending.
 
-relevance로 정렬하기 위해, relevance를 값으로 표시해야 한다. Elasticsearch에서 relevance score는 검색 결과에 _score 로 반횐되는 부동 소수점 숫자로 표시된다. 기본 정렬 순서는 _score의 내림차순이다.
+relevance로 정렬하기 위해, relevance를 값으로 표시해야 한다. Elasticsearch에서 relevance score는 검색 결과에 _score 로 반환되는 부동 소수점 숫자로 표시된다. 기본 정렬 순서는 _score의 내림차순이다.
 
 Sometimes, though, you don't have a meaningful relevance score. For instance,
 the following query just returns all tweets whose `user_id` field has the
@@ -90,11 +90,10 @@ You will notice two differences in the results:
 }
 --------------------------------------------------
 <1> The `_score` is not calculated, because it is not being used for sorting.
+정렬에 사용되지 않았기 때문에 _score는 계산되지 않는다. 
 <2> The value of the `date` field, expressed as milliseconds since the epoch,
     is returned in the `sort` values.
-
-<1> 정렬에 사용되지 않았기 때문에 _score는 계산되지 않는다. 
-<2> date field의 값은 millisecond로 표시되어, sort 값으로 반환된다. 
+date field의 값은 millisecond로 표시되어, sort 값으로 반환된다. 
 
 The first is that we have ((("date field, sorting search results by")))a new element in each result called `sort`, which
 contains the value(s) that was used for sorting.  In this case, we sorted on
